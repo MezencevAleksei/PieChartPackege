@@ -11,9 +11,14 @@
 import UIKit
 
 public struct Slice {
-   public let color: UIColor
-   public let value: CGFloat
-   public let title: String
+    public init(color: UIColor, value: CGFloat, title: String){
+        self.color = color
+        self.value = value
+        self.title = title
+    }
+    public let color: UIColor
+    public let value: CGFloat
+    public let title: String
 }
 
 @IBDesignable
@@ -193,7 +198,11 @@ public class PieChart: UIView {
             layer.addSublayer(_layer)
         }
         if animationLayers.count > 0 {
-            timer = Timer.scheduledTimer(withTimeInterval: animationTime, repeats: false, block:  {_ in self.stopAnimation()})
+            if #available(iOS 10.0, *) {
+                timer = Timer.scheduledTimer(withTimeInterval: animationTime, repeats: false, block:  {_ in self.stopAnimation()})
+            } else {
+                // Fallback on earlier versions
+            }
             isAnimationRuning = true
             setNeedsDisplay()
         }
@@ -230,7 +239,7 @@ extension CGPoint {
                   y: sin(degrees) * radius + center.y)
     }
     
-    public func projected(by value: CGFloat, angle: CGFloat) -> CGPoint {
+    func projected(by value: CGFloat, angle: CGFloat) -> CGPoint {
         return CGPoint(
             x: x + value * cos(angle), y: y + value * sin(angle)
         )
